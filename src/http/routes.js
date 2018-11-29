@@ -6,7 +6,7 @@ const routes = (server) => {
         next();
     });
 
-    server.get('/customer', async (req, res, next) => {
+    server.get('/product', async (req, res, next) => {
         try {
             res.send(await db.products().all());
         } catch (error) {
@@ -15,10 +15,10 @@ const routes = (server) => {
         next();
     });
 
-    server.post('/customer', async (req, res, next) => {
-        const { code, name, desc, price } = req.params;
+    server.post('/product', async (req, res, next) => {
+        const { name, amountPerPayment, reference } = req.body;
         try {
-            res.send(await db.products().save(code, name, desc, price));
+            res.send(await db.products().save(name, amountPerPayment, reference));
         } catch (error) {
             res.send(error);
         }

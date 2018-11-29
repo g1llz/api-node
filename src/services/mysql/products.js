@@ -1,3 +1,5 @@
+const create = require('../payments/create-plan');
+
 const products = deps => {
     const { connect, errorHandler } = deps;
     return {
@@ -12,22 +14,16 @@ const products = deps => {
                 });
             })
         },
-        save: (code, name, desc, price) => {
+        save: (name, amountPerPayment, reference) => {
             return new Promise((resolve, reject) => {
-                connect.query('INSERT INTO product (code_product, nam_product, desc_product, val_product) VALUES (?, ?, ?, ?)', [code, name, desc, price], (error, results) => {
-                    if (error) {
-                        errorHandler(error, 'Falha ao cadastrar produto.', reject);
+                create(name, amountPerPayment, reference)
+                    .then((res) => {
+                        resolve(res);
+                    }).catch((error) => {
+                        errorHandler(error, 'Falha ao cadastrar o produto.', reject);
                         return false;
-                    };
-                    resolve({ pruducts: {
-                        code_product: code,
-                        nam_product: name,
-                        desc_product: desc,
-                        val_product: price,
-                        id: results.insertId
-                    } });
-                });
-            })
+                    });
+            });
         },
         update: (id, product) => {
 
