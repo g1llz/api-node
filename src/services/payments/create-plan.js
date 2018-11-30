@@ -1,8 +1,16 @@
 const request = require('request');
+
+const psURL = process.env.PAG_url;
+const email = process.env.PAG_email;
+const token = process.env.PAG_token;
+
 const create = (name, amountPerPayment, reference) => {
     const options = {
-        headers: { 'Content-Type': 'application/json;charset=ISO-8859-1 ', 'Accept': 'application/vnd.pagseguro.com.br.v3+json;charset=ISO-8859-1' },
-        url: 'https://ws.sandbox.pagseguro.uol.com.br/pre-approvals/request?email=*.com&token=*',
+        headers: {
+            'Content-Type': 'application/json;charset=ISO-8859-1 ',
+            'Accept': 'application/vnd.pagseguro.com.br.v3+json;charset=ISO-8859-1'
+        },
+        url: `${psURL}/request?email=${email}&token=${token}`,
         body: JSON.stringify({
             reference: reference,
             preApproval: {
@@ -16,7 +24,7 @@ const create = (name, amountPerPayment, reference) => {
                 }
             },
             receiver: {
-                email: '*'
+                email: email
             }
         })
     }
