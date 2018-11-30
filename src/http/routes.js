@@ -6,19 +6,29 @@ const routes = (server) => {
         next();
     });
 
-    server.get('/product', async (req, res, next) => {
+    server.post('/auth', async (req, res, next) => {
+        const { email, password } = req.body;
         try {
-            res.send(await db.products().all());
+            res.send(await db.auth().authenticate(email, password));
         } catch (error) {
             res.send(error);
         }
         next();
     });
 
-    server.post('/product', async (req, res, next) => {
+    server.get('/plans', async (req, res, next) => {
+        try {
+            res.send(await db.plans().all());
+        } catch (error) {
+            res.send(error);
+        }
+        next();
+    });
+
+    server.post('/plan', async (req, res, next) => {
         const { name, amountPerPayment, reference } = req.body;
         try {
-            res.send(await db.products().save(name, amountPerPayment, reference));
+            res.send(await db.plans().save(name, amountPerPayment, reference));
         } catch (error) {
             res.send(error);
         }
