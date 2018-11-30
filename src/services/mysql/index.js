@@ -1,9 +1,9 @@
 const mysql = require('mysql');
 const connect = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'api_node_db'
+    host: process.env.MYSQL_host,
+    user: process.env.MYSQL_user,
+    password: process.env.MYSQL_password,
+    database: process.env.MYSQL_database
 });
 
 const errorHandler = (error, msg, rejectFunction) => {
@@ -11,8 +11,12 @@ const errorHandler = (error, msg, rejectFunction) => {
     rejectFunction({ error: msg });
 }
 
-const productModule = require('./products')({ connect, errorHandler });
+const authModule = require('./auth')({ connect, errorHandler });
+const usersModule = require('./users')({ connect, errorHandler });
+const plansModule = require('./plans')({ connect, errorHandler });
 
 module.exports = {
-    products: () => productModule
+    auth: () => authModule,
+    users: () => usersModule,
+    plans: () => plansModule
 }
