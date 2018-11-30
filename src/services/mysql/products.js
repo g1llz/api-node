@@ -23,7 +23,7 @@ const products = deps => {
                         errorHandler(error, 'Falha ao cadastrar o produto.', reject);
                         return false;
                     });
-            });
+            })
         },
         update: (id, product) => {
 
