@@ -1,4 +1,4 @@
-const create = require('../payments/create-plan');
+const pg = require('../payments');
 
 const plans = deps => {
     const { connect, errorHandler } = deps;
@@ -14,13 +14,24 @@ const plans = deps => {
                 });
             })
         },
-        save: (name, amountPerPayment, reference) => {
+        save: (plan) => {
             return new Promise((resolve, reject) => {
-                create(name, amountPerPayment, reference)
+                pg.options().create(plan)
                     .then((res) => {
-                        resolve(res);
-                    }).catch((error) => {
-                        errorHandler(error, 'Falha ao cadastrar o plano.', reject);
+                        if (res.code) {
+                        // connect.query('INSERT INTO product (reference, name, details, amountPerPayment, ps_code) VALUES (?, ?, ?, ?, ?)', [...plan, psCode], (error, results) => {
+                        //     if (error || !results.affectedRows) {
+                        //         errorHandler(error, 'Falha ao cadastrar plano na base.', reject);
+                        //         return false;
+                        //     };
+                        //     console.log(results);
+                        //     resolve({ plan: { id: results.insertId }, affectedRows: results.affectedRows })
+                        // })
+                            resolve({ message: 'Plano criado com sucesso.', res }); // TEMPORÁRIO
+                        }
+                    })
+                    .catch((error) => {
+                        errorHandler(error, 'Falha ao criar plano no PagSeguro.', reject);
                         return false;
                     });
             })
