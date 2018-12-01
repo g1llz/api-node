@@ -17,22 +17,23 @@ const sign = deps => {
                     email: process.env.PAG_email,
                     token: process.env.PAG_token
                 },
-                body: JSON.stringify(customer),
+                body: customer,
+                json: true,
                 method: 'POST'
             }
-            console.log(options);
-            // return new Promise((resolve, reject) => {
-            //     request(options)
-            //         .then((res) => {
-            //             if (res.code) {
-            //                 resolve({ message: 'Usuário vinculado ao plano.', res })
-            //             }
-            //         })
-            //         .catch((error) => {
-            //             errorHandler(error, 'Falha ao vincular usuário ao plano.', reject);
-            //             return false;
-            //         });
-            // });
+            console.log(options.body);
+            return new Promise((resolve, reject) => {
+                request(options)
+                    .then((res) => {
+                        if (res.code) {
+                            resolve({ message: 'Usuário vinculado ao plano.', res })
+                        }
+                    })
+                    .catch((error) => {
+                        errorHandler(error, 'Falha ao vincular usuário ao plano.', reject);
+                        return false;
+                    });
+            });
         },
         create: plan => {
             const options = {
