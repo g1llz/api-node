@@ -15,19 +15,20 @@ const plans = deps => {
             })
         },
         save: (plan) => {
+            const item = [
+                plan.reference, plan.preApproval.name, plan.preApproval.details, plan.preApproval.amountPerPayment
+            ];
             return new Promise((resolve, reject) => {
                 pg.options().create(plan)
                     .then((res) => {
                         if (res.code) {
-                        // connect.query('INSERT INTO product (reference, name, details, amountPerPayment, ps_code) VALUES (?, ?, ?, ?, ?)', [...plan, psCode], (error, results) => {
-                        //     if (error || !results.affectedRows) {
-                        //         errorHandler(error, 'Falha ao cadastrar plano na base.', reject);
-                        //         return false;
-                        //     };
-                        //     console.log(results);
-                        //     resolve({ plan: { id: results.insertId }, affectedRows: results.affectedRows })
-                        // })
-                            resolve({ message: 'Plano criado com sucesso.', res }); // TEMPORÁRIO
+                            connect.query('INSERT INTO product (reference, name, details, amountPerPayment, ps_code) VALUES (?, ?, ?, ?, ?)', [...item, res.code], (error, results) => {
+                                if (error || !results.affectedRows) {
+                                    errorHandler(error, 'Falha ao cadastrar plano na base.', reject);
+                                    return false;
+                                };
+                                resolve({ plan: { id: results.insertId }, affectedRows: results.affectedRows })
+                            })
                         }
                     })
                     .catch((error) => {
