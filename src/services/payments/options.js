@@ -1,27 +1,25 @@
 const request = require('request-promise');
 const convert = require('xml-js');
 
-const psURL = process.env.PAG_url;
+const pgAPIUrl = process.env.PAG_url;
+const pgAccess = { email: process.env.PAG_email, token: process.env.PAG_token };
+const pgHeader = {
+    'Content-Type': 'application/json;charset=ISO-8859-1',
+    'Accept': 'application/vnd.pagseguro.com.br.v3+json;charset=ISO-8859-1'
+};
 
 const sign = deps => {
     const { errorHandler } = deps;
     return {
         assign: (customer) => {
             const options = {
-                headers: {
-                    'Content-Type': 'application/json;charset=ISO-8859-1',
-                    'Accept': 'application/vnd.pagseguro.com.br.v3+json;charset=ISO-8859-1'
-                },
-                uri: `${psURL}/pre-approvals`,
-                qs: {
-                    email: process.env.PAG_email,
-                    token: process.env.PAG_token
-                },
+                headers: pgHeader,
+                uri: `${pgAPIUrl}/pre-approvals`,
+                qs: pgAccess,
                 body: customer,
                 json: true,
                 method: 'POST'
             }
-            console.log(options.body);
             return new Promise((resolve, reject) => {
                 request(options)
                     .then((res) => {
@@ -37,32 +35,10 @@ const sign = deps => {
         },
         create: plan => {
             const options = {
-                headers: {
-                    'Content-Type': 'application/json;charset=ISO-8859-1 ',
-                    'Accept': 'application/vnd.pagseguro.com.br.v3+json;charset=ISO-8859-1'
-                },
-                uri: `${psURL}/pre-approvals/request`,
-                qs: {
-                    email: process.env.PAG_email,
-                    token: process.env.PAG_token
-                },
-                body: {
-                    reference: plan.reference,
-                    preApproval: {
-                        name: plan.name,
-                        charge: 'AUTO',
-                        period: 'MONTHLY',
-                        amountPerPayment: plan.amountPerPayment,
-                        expiration: {
-                            value: '24',
-                            unit: 'MONTHS'
-                        },
-                        details: plan.details
-                    },
-                    receiver: {
-                        email: process.env.PAG_email
-                    }
-                },
+                headers: pgHeader,
+                uri: `${pgAPIUrl}/pre-approvals/request`,
+                qs: pgAccess,
+                body: plan,
                 json: true,
                 method: 'POST'
             }
@@ -79,14 +55,12 @@ const sign = deps => {
         },
         start: () => {
             const options = {
+                // in this case header needs just content-type;
                 headers: {
                     'Content-Type': 'application/json;charset=ISO-8859-1'
                 },
-                uri: `${psURL}/v2/sessions`,
-                qs: {
-                    email: process.env.PAG_email,
-                    token: process.env.PAG_token
-                },
+                uri: `${pgAPIUrl}/v2/sessions`,
+                qs: pgAccess,
                 method: 'POST'
             }
             return new Promise((resolve, reject) => {
