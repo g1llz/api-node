@@ -2,11 +2,7 @@ const db = require('../services/mysql');
 const pg = require('../services/payments');
 
 const routes = (server) => {
-    server.get('/', (req, res, next) => {
-        res.send('silence is gold.');
-        next();
-    });
-
+    // public routes
     server.post('/auth', async (req, res, next) => {
         const { email, password } = req.body;
         try {
@@ -17,14 +13,14 @@ const routes = (server) => {
         next();
     });
 
-    server.post('/auth/start-payment', async (req, res, next) => {
+    server.post('/auth/register', async (req, res, next) => {
+        const { email, password } = req.body;
         try {
-            res.send(await pg.options().start());
+            res.send(await db.users().save(email, password));
         } catch (error) {
             res.send(error);
         }
-        next();
-    });
+    })
 
     server.get('/plans', async (req, res, next) => {
         try {
@@ -35,10 +31,20 @@ const routes = (server) => {
         next();
     });
 
-    server.post('/plan/create', async (req, res, next) => {
+    // protected routes
+    server.post('/admin/plan/create', async (req, res, next) => {
         const { plan } = req.body;
         try {
             res.send(await db.plans().save(plan));
+        } catch (error) {
+            res.send(error);
+        }
+        next();
+    });
+
+    server.post('/start-payment', async (req, res, next) => {
+        try {
+            res.send(await pg.options().start());
         } catch (error) {
             res.send(error);
         }
@@ -52,6 +58,11 @@ const routes = (server) => {
         } catch (error) {
             res.send(error);
         }
+        next();
+    });
+
+    server.get('/', (req, res, next) => {
+        res.send('silence is gold.');
         next();
     });
 };
