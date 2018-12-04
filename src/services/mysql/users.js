@@ -16,7 +16,7 @@ const users = deps => {
         },
         save: (email, password) => {
             return new Promise((resolve, reject) => {
-                connect.query('INSERT INTO user (email, password) VALUES (?, ?)', [email, sha1(password)], (error, results) => {
+                connect.query('INSERT INTO user (email, password, role) VALUES (?, ?, ?)', [email, sha1(password), 'user'], (error, results) => {
                     if (error || !results.affectedRows) {
                         errorHandler(error, 'Falha ao salvar usuário.', reject);
                         return false;
