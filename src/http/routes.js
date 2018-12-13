@@ -1,7 +1,8 @@
 const db = require('../services/mysql');
+const URI = '/api/v1';
 
 const routes = (server) => {
-    server.post('/auth', async (req, res, next) => {
+    server.post(`${URI}/auth`, async (req, res, next) => {
         const { email, password } = req.body;
         try {
             res.send(await db.auth().authenticate(email, password));
@@ -11,7 +12,7 @@ const routes = (server) => {
         next();
     });
 
-    server.get('/users', async (req, res, next) => {
+    server.get(`${URI}/users`, async (req, res, next) => {
         try {
             res.send(await db.users().all());
         } catch (error) {
@@ -19,7 +20,7 @@ const routes = (server) => {
         }
     });
 
-    server.post('/users', async (req, res, next) => {
+    server.post(`${URI}/users`, async (req, res, next) => {
         const { email, password } = req.body;
         try {
             res.send(await db.users().save(email, password));
@@ -28,7 +29,7 @@ const routes = (server) => {
         }
     });
 
-    server.get('/users/:id', async (req, res, next) => {
+    server.get(`${URI}/users/:id`, async (req, res, next) => {
         const { id } = req.params;
         try {
             res.send(await db.users().byId(id));
@@ -37,7 +38,7 @@ const routes = (server) => {
         }
     });
 
-    server.get('/', (req, res, next) => {
+    server.get(URI, (req, res, next) => {
         res.send('silence is gold.');
         next();
     });
