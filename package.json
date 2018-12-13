@@ -24,7 +24,6 @@
     "request-promise": "^4.2.2",
     "restify": "^7.2.3",
     "restify-cors-middleware": "^1.1.1",
-    "sha1": "^1.1.1",
-    "xml-js": "^1.6.8"
+    "sha1": "^1.1.1"
   }
 }
