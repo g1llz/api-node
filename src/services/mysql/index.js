@@ -13,10 +13,8 @@ const errorHandler = (error, msg, rejectFunction) => {
 
 const authModule = require('./auth')({ connect, errorHandler });
 const usersModule = require('./users')({ connect, errorHandler });
-const plansModule = require('./plans')({ connect, errorHandler });
 
 module.exports = {
     auth: () => authModule,
-    users: () => usersModule,
-    plans: () => plansModule
+    users: () => usersModule
 }
