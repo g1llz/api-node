@@ -5,11 +5,12 @@ const authGuard = require('../http/authGuard');
 
 const server = restify.createServer();
 
-const exclusions = ['/auth', '/auth/register', '/plans'];
+const exclusions = ['/auth'];
 
 server.pre(cors.preflight);
 server.use(cors.actual);
 server.use(restify.plugins.bodyParser());
+server.use(restify.plugins.queryParser());
 server.use(authGuard({ exclusions }));
 
 routes(server);
