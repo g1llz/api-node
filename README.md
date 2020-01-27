@@ -6,6 +6,7 @@ It has **JWT auth** and a user registry using **mySQL**
 `npm install` to get dependences<br/>
 copy and rename `.env.example` to `.env`, and put your configs ..<br/>
 create user table and user (with admin role) in your DB (necessary to the get token)
+
 finally, `npm run dev` to go!
 
 ### user table schema
