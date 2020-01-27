@@ -6,7 +6,7 @@ const authGuard = require('../http/authGuard');
 const server = restify.createServer();
 
 const exclusions = [
-    `${process.env.URI}/auth`
+  `${process.env.URI}/auth`
 ];
 
 server.pre(cors.preflight);

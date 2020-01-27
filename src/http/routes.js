@@ -4,7 +4,7 @@ const routes = (server) => {
   server.post(`${process.env.URI}/auth`, async (req, res, next) => {
     const { email, password } = req.body;
     try {
-      res.json(await db.auth().authenticate(email, password));
+      res.json(await db.auth.authenticate(email, password));
     } catch (error) {
       res.json(error);
     }
@@ -13,17 +13,17 @@ const routes = (server) => {
 
   server.get(`${process.env.URI}/users`, async (req, res, next) => {
     try {
-      res.json(await db.users().all());
+      res.json(await db.user.all());
     } catch (error) {
       res.json(error);
     }
     next();
   });
 
-  server.post(`${process.env.URI}/users`, async (req, res, next) => {
+  server.post(`${process.env.URI}/admin/users`, async (req, res, next) => {
     const { email, password } = req.body;
     try {
-      res.json(await db.users().save(email, password));
+      res.json(await db.user.save(email, password));
     } catch (error) {
       res.json(error);
     }
@@ -33,15 +33,10 @@ const routes = (server) => {
   server.get(`${process.env.URI}/users/:id`, async (req, res, next) => {
     const { id } = req.params;
     try {
-      res.json(await db.users().byId(id));
+      res.json(await db.user.byId(id));
     } catch (error) {
       res.json(error);
     }
-    next();
-  });
-
-  server.get(process.env.URI, (req, res, next) => {
-    res.json({ text: 'silence is gold.' });
     next();
   });
 };
