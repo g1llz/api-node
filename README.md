@@ -7,3 +7,5 @@ how to use:<br/>
 ~ copy and rename `.env.example` to `.env`, and put your configs ..<br/>
 ~ create a user in your DB (necessary to the get token)<br/>
 ~ finally, `npm run dev` to go!<br/>
+
+enjoy!
