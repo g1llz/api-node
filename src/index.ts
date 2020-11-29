@@ -1,4 +1,4 @@
 import './config/env';
 import server from './server';
 
-server.listen(process.env.PORT);
+server.listen(process.env.PORT ?? 3000);

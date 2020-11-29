@@ -1,42 +1,23 @@
 import { Application } from 'express';
 
+import AuthController from '../controllers/auth';
+import UserController from '../controllers/user';
+import TodoController from '../controllers/todo';
+
+import authGuard from './auth-guard';
+
 export default function routes(server: Application) {
-  server.post(`${process.env.URI}/auth`, async (req, res, next) => {
-    const { email, password } = req.body;
-    try {
-      // res.json(await db.auth.authenticate(email, password));
-      res.json({ success: true });
-    } catch (error) {
-      res.json(error);
-    }
-  });
+    // auth
+    server.post('/v1/login', AuthController.login);
+    
+    // user
+    server.get('/user/:id', [UserController.show, authGuard]);
+    server.put('/user/:id', [UserController.update, authGuard]);
+    server.post('/user', UserController.store);
 
-  server.get(`${process.env.URI}/users`, async (req, res, next) => {
-    try {
-      // res.json(await db.user.all());
-      res.json({ success: true });
-    } catch (error) {
-      res.json(error);
-    }
-  });
-
-  server.post(`${process.env.URI}/admin/users`, async (req, res, next) => {
-    const { email, password } = req.body;
-    try {
-      // res.json(await db.user.save(email, password));
-      res.json({ success: true });
-    } catch (error) {
-      res.json(error);
-    }
-  });
-
-  server.get(`${process.env.URI}/users/:id`, async (req, res, next) => {
-    const { id } = req.params;
-    try {
-      // res.json(await db.user.byId(id));
-      res.json({ success: true });
-    } catch (error) {
-      res.json(error);
-    }
-  });
+    // todo
+    server.get('/todo', [TodoController.index, authGuard]);
+    server.get('/todo/:id', [TodoController.show, authGuard]);
+    server.put('/todo/:id', [TodoController.update, authGuard]);
+    server.post('/todo', [TodoController.store, authGuard]);
 };
