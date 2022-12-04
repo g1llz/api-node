@@ -1,4 +1,5 @@
 import './config/env';
-import server from './server';
+import { Server } from './infra/server';
 
-server.listen(process.env.PORT ?? 3000);
+const server = new Server();
+server.build().listen();
