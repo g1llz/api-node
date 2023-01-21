@@ -1,7 +1,7 @@
 import { HttpResponse } from './types';
 
 export class CreateResponse {
-  static ok(message?: string): HttpResponse {
-    return { status: 200, message };
+  static ok(data?: Record<string, unknown>): HttpResponse {
+    return { status: 200, data };
   }
 }
