@@ -7,14 +7,12 @@ type Input = Record<string, unknown> & {
 };
 
 export class UserLoadController implements Controller {
-  private readonly userService: UserService;
-
-  constructor() {
-    this.userService = new UserService();
-  }
+  constructor(private readonly userService: UserService) {}
 
   async execute(input: Input) {
     const user = await this.userService.loadById(input.userId);
+
+    if (!user) return CreateResponse.notFound();
     return CreateResponse.ok(user);
   }
 }
