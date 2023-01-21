@@ -1,16 +1,15 @@
 import { Request, Response } from 'express';
-
-import { Controller } from './types';
+import { Controller } from './interfaces';
 
 export class ExpressAdapter<T = Record<string, unknown>> {
   constructor(private readonly controller: Controller<T>) {}
 
-  adapt = async (req: Request<unknown, unknown, Partial<T>, Partial<T>>, res: Response) => {
-    const input = { ...req.body, ...req.query } as T;
+  adapt = async (req: Request, res: Response) => {
+    const input = { ...req.body, ...req.query, ...req.params } as T;
 
-    const { status, message } = await this.controller.execute(input);
-    if (!message) return res.sendStatus(status);
+    const { status, data } = await this.controller.execute(input);
+    if (!data) return res.sendStatus(status);
 
-    return res.status(status).json({ message });
+    return res.status(status).json({ data });
   };
 }
