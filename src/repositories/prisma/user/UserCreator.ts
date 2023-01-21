@@ -1,11 +1,19 @@
-export class UserCreator {
-  constructor() {}
+import { PrismaClient, User } from '@prisma/client';
 
-  create({ email, password }) {
-    return {
-      id: 'XPTO12zxz',
-      email,
-      role: 'agent'
-    }
+type PickedUser = Pick<User, 'id' | 'email' | 'role'>
+
+export class UserCreator {
+  constructor(private readonly prisma: PrismaClient) {}
+
+  async create({ name, email, password }): Promise<PickedUser> {
+    return this.prisma.user.create({
+      data: {
+        email,
+        password,
+        role: 'agent',
+        name,
+      },
+      select: { id: true, email: true, role: true }
+    });
   }
 }

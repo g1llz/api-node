@@ -1,10 +1,14 @@
-export class UserLoader {
-  constructor() {}
+import { PrismaClient, User } from '@prisma/client';
 
-  async loadById(id: string) {
-    return {
-      id,
-      role: 'agent'
-    }
+type PickedUser = Pick<User, 'email' | 'name' | 'role'>;
+
+export class UserLoader {
+  constructor(private readonly prisma: PrismaClient) {}
+
+  async loadById(id: string): Promise<PickedUser> {
+    return this.prisma.user.findUnique({
+      where: { id },
+      select: { email: true, name: true, role: true },
+    });
   }
 }
