@@ -7,12 +7,40 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  agent
+  admin
+}
+
 model User {
-  id        String   @id @unique @default(uuid())
-  email     String   @unique
-  name      String
-  role      String
+  uuid      String    @id @unique @default(uuid())
+  email     String    @unique
   password  String
+  role      Role
+  profileId String    @unique
+  profile   Profile   @relation(fields: [profileId], references: [uuid], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Session   Session[]
+}
+
+model Profile {
+  uuid      String   @id @unique @default(uuid())
+  firstName String
+  lastName  String?
+  document  String?
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User?
+}
+
+model Session {
+  uuid      String   @id @unique @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [uuid])
+  userAgent String
+  valid     Boolean
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
