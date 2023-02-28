@@ -1,52 +1,42 @@
-import { PrismaClient } from '@prisma/client';
 import { Application } from 'express';
 
 import { API } from '../../config/api';
-import { AuthController } from '../../presentation/controllers/AuthController';
-import { UserUpdateController } from '../../presentation/controllers/UserUpdateController';
-import { UserCreateController } from '../../presentation/controllers/UserCreateController';
-import { UserLoadController } from '../../presentation/controllers/UserLoadController';
 import { ExpressAdapter } from '../adapters/ExpressAdapter';
 
-import authGuard from './auth-guard';
-
-import { UserService } from '../../services/UserService';
-import { UserLoader } from '../../repositories/prisma/user/UserLoader';
-import { UserCreator } from '../../repositories/prisma/user/UserCreator';
-import { UserUpdater } from '../../repositories/prisma/user/UserUpdater';
+import { AuthFactory } from '../factories/AuthFactory';
+import { ProfileLoadFactory } from '../factories/ProfileLoadFactory';
+import { ProfileUpdateFactory } from '../factories/ProfileUpdateFactory';
+import { UserCreateFactory } from '../factories/UserCreateFactory';
+import { UserPasswordFactory } from '../factories/UserPasswordFactory';
+import { UserRoleFactory } from '../factories/UserRoleFactory';
 
 const {
-  resources: { auth: AUTH, user: USER },
+  resources: { auth: AUTH, user: USER, profile: PROFILE },
 } = API.v1;
 
 export class Router {
-  private readonly prisma: PrismaClient;
-
-  constructor(private readonly server: Application) {
-    this.prisma = new PrismaClient();
-  }
+  constructor(private server: Application) {}
 
   setup() {
     // auth
-    this.server.post(AUTH, new ExpressAdapter(new AuthController()).adapt);
+    this.server.post(AUTH, new ExpressAdapter(AuthFactory.create()).adapt);
 
     // user
-    const userService = new UserService(
-      new UserLoader(this.prisma),
-      new UserCreator(this.prisma),
-      new UserUpdater(this.prisma),
-    );
-
-    this.server.post(USER, new ExpressAdapter(new UserCreateController(userService)).adapt);
-
-    this.server.get(
-      `${USER}/:userId`,
-      new ExpressAdapter(new UserLoadController(userService)).adapt,
-    );
+    this.server.post(USER, new ExpressAdapter(UserCreateFactory.create()).adapt);
 
     this.server.put(
-      `${USER}/:userId`,
-      new ExpressAdapter(new UserUpdateController(userService)).adapt,
+      `${USER}/password/:userId`,
+      new ExpressAdapter(UserPasswordFactory.create()).adapt,
+    );
+
+    this.server.put(`${USER}/role/:userId`, new ExpressAdapter(UserRoleFactory.create()).adapt);
+
+    // profile
+    this.server.get(`${PROFILE}/:profileId`, new ExpressAdapter(ProfileLoadFactory.create()).adapt);
+
+    this.server.put(
+      `${PROFILE}/:profileId`,
+      new ExpressAdapter(ProfileUpdateFactory.create()).adapt,
     );
   }
 }

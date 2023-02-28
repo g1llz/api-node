@@ -9,7 +9,11 @@ export class CreateResponse {
     return { status: 201, data };
   }
 
-  static notFound(): HttpResponse {
-    return { status: 404 };
+  static notFound(text?: string): HttpResponse {
+    return { status: 404, data: { message: text ?? null } };
+  }
+
+  static badRequest(text?: string): HttpResponse {
+    return { status: 400, data: { message: text ?? null } };
   }
 }

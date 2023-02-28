@@ -4,7 +4,7 @@ import cors from 'cors';
 import { Router } from '../http/routes';
 
 export class Server {
-  private readonly server: Application;
+  private server: Application;
 
   constructor() {
     this.server = express();

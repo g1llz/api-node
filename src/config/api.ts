@@ -3,6 +3,7 @@ export const API = {
     resources: {
       auth: '/v1/auth',
       user: '/v1/user',
+      profile: '/v1/profile',
     },
-  }
+  },
 };
