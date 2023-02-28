@@ -1,19 +1,31 @@
 import { PrismaClient, User } from '@prisma/client';
 
-type PickedUser = Pick<User, 'id' | 'email' | 'role'>
+import { PasswordHandler } from '../../../utils/PasswordHandler';
+import { CreateUser } from '../../../presentation/controllers/UserCreateController';
+
+type PickedUser = Pick<User, 'profileId' | 'email' | 'role'>;
 
 export class UserCreator {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async create({ name, email, password }): Promise<PickedUser> {
+  async create(input: CreateUser): Promise<PickedUser> {
+    const password = await new PasswordHandler().encrypt(input.password);
+
     return this.prisma.user.create({
       data: {
-        email,
+        email: input.email,
         password,
-        role: 'agent',
-        name,
+        role: input.role as 'agent' | 'admin',
+        profile: {
+          create: {
+            firstName: input.firstName,
+            lastName: input.lastName ?? null,
+            document: input.document ?? null,
+            phone: input.phone ?? null,
+          },
+        },
       },
-      select: { id: true, email: true, role: true }
+      select: { profileId: true, email: true, role: true, createdAt: true },
     });
   }
 }
